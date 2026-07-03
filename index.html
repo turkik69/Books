@@ -1,0 +1,678 @@
+import React, { useState, useRef, useEffect } from "react";
+import { BookOpen, Phone, Camera, Check, MessageCircle, Send, ShoppingBag, Truck, Wallet, ChevronLeft, Star, ShieldCheck, X, PlusCircle, Package } from "lucide-react";
+
+// ---------- Design tokens ----------
+// navy #1F3A5F | gold #C9A24B | paper #FAF6ED | ink #2B2620 | sage #7A8B76
+
+const STAMP = ({ children, tone = "gold" }) => {
+  const colors = {
+    gold: "border-[#C9A24B] text-[#C9A24B]",
+    sage: "border-[#7A8B76] text-[#7A8B76]",
+    navy: "border-[#1F3A5F] text-[#1F3A5F]",
+  };
+  return (
+    <div
+      className={`inline-flex items-center gap-1.5 rounded-full border-2 border-dashed px-3 py-1 text-xs font-bold tracking-wide -rotate-3 ${colors[tone]}`}
+      style={{ fontFamily: "Tajawal, sans-serif" }}
+    >
+      {children}
+    </div>
+  );
+};
+
+const SAMPLE_BOOKS = [
+  {
+    id: 1,
+    title: "ألف ليلة وليلة",
+    author: "مجهول",
+    condition: "جيد",
+    price: 6,
+    seller: "سالم البلوشي",
+    sellerId: "s1",
+    cover: "linear-gradient(135deg,#8B4A3C,#5C2E28)",
+    desc: "نسخة كاملة، الأجزاء الثلاثة، حالة جيدة مع بعض الإصفرار الطبيعي بالصفحات.",
+  },
+  {
+    id: 2,
+    title: "موسم الهجرة إلى الشمال",
+    author: "الطيب صالح",
+    condition: "ممتاز",
+    price: 3.5,
+    seller: "منى الحارثية",
+    sellerId: "s2",
+    cover: "linear-gradient(135deg,#1F3A5F,#0F2038)",
+    desc: "طبعة أنيقة، بدون أي تحديد أو كتابة داخل الصفحات.",
+  },
+  {
+    id: 3,
+    title: "مقدمة ابن خلدون",
+    author: "ابن خلدون",
+    condition: "مقبول",
+    price: 8,
+    seller: "سالم البلوشي",
+    sellerId: "s1",
+    cover: "linear-gradient(135deg,#C9A24B,#8A6D2F)",
+    desc: "الغلاف عليه بعض التآكل البسيط، لكن كل الصفحات موجودة وسليمة.",
+  },
+];
+
+function useOtpTimer(active) {
+  const [seconds, setSeconds] = useState(45);
+  useEffect(() => {
+    if (!active) return;
+    setSeconds(45);
+    const t = setInterval(() => setSeconds((s) => (s > 0 ? s - 1 : 0)), 1000);
+    return () => clearInterval(t);
+  }, [active]);
+  return seconds;
+}
+
+export default function BookMarketApp() {
+  const [screen, setScreen] = useState("home"); // home, register, otp, sellerForm, listing, chat, checkout, payConfirm, sellerWallet
+  const [phone, setPhone] = useState("");
+  const [name, setName] = useState("");
+  const [otpDigits, setOtpDigits] = useState(["", "", "", ""]);
+  const [verified, setVerified] = useState(false);
+  const [books, setBooks] = useState(SAMPLE_BOOKS);
+  const [activeBook, setActiveBook] = useState(null);
+  const [chatMessages, setChatMessages] = useState([]);
+  const [chatInput, setChatInput] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("thawani");
+  const [orderStatus, setOrderStatus] = useState(null); // null, paid, shipped, delivered, settled
+  const [newBook, setNewBook] = useState({ title: "", author: "", price: "", condition: "جيد", desc: "" });
+  const [toast, setToast] = useState(null);
+  const otpRefs = useRef([]);
+  const timerActive = screen === "otp";
+  const seconds = useOtpTimer(timerActive);
+
+  const showToast = (msg, tone = "sage") => {
+    setToast({ msg, tone });
+    setTimeout(() => setToast(null), 2600);
+  };
+
+  const goto = (s) => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setScreen(s);
+  };
+
+  // ---------- OTP handlers ----------
+  const handleOtpChange = (i, v) => {
+    if (!/^\d?$/.test(v)) return;
+    const next = [...otpDigits];
+    next[i] = v;
+    setOtpDigits(next);
+    if (v && i < 3) otpRefs.current[i + 1]?.focus();
+    if (next.every((d) => d !== "") && next.join("").length === 4) {
+      setTimeout(() => {
+        setVerified(true);
+        showToast("تم توثيق رقم هاتفك بنجاح", "sage");
+        goto("sellerForm");
+      }, 400);
+    }
+  };
+
+  const submitListing = () => {
+    if (!newBook.title || !newBook.price) {
+      showToast("الرجاء إدخال عنوان الكتاب والسعر", "gold");
+      return;
+    }
+    const book = {
+      id: Date.now(),
+      title: newBook.title,
+      author: newBook.author || "غير محدد",
+      condition: newBook.condition,
+      price: parseFloat(newBook.price),
+      seller: name || "حسابك",
+      sellerId: "me",
+      cover: "linear-gradient(135deg,#7A8B76,#4C5A49)",
+      desc: newBook.desc || "بدون وصف إضافي.",
+      mine: true,
+    };
+    setBooks((b) => [book, ...b]);
+    showToast("تم نشر إعلانك — بدون أي رسوم مسبقة", "sage");
+    goto("home");
+  };
+
+  const openChat = (book) => {
+    setActiveBook(book);
+    setChatMessages([
+      { from: "seller", text: `مرحباً! نعم الكتاب "${book.title}" لسه متوفر. حالته ${book.condition}.` },
+    ]);
+    goto("chat");
+  };
+
+  const sendMessage = () => {
+    if (!chatInput.trim()) return;
+    setChatMessages((m) => [...m, { from: "me", text: chatInput }]);
+    setChatInput("");
+    setTimeout(() => {
+      setChatMessages((m) => [...m, { from: "seller", text: "تمام، تقدر تكمل الشراء من التطبيق وأنا بجهز الكتاب للشحن 📦" }]);
+    }, 900);
+  };
+
+  const commission = activeBook ? +(activeBook.price * 0.2).toFixed(2) : 0;
+  const sellerNet = activeBook ? +(activeBook.price - commission).toFixed(2) : 0;
+
+  return (
+    <div dir="rtl" className="min-h-screen w-full" style={{ background: "#FAF6ED", fontFamily: "'Noto Naskh Arabic', serif" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap');
+        .disp { font-family: 'Tajawal', sans-serif; }
+        .scrollbar-none::-webkit-scrollbar { display: none; }
+      `}</style>
+
+      {/* Toast */}
+      {toast && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 animate-[fadeIn_0.2s]">
+          <div
+            className={`px-4 py-2.5 rounded-xl shadow-lg text-sm font-semibold disp flex items-center gap-2 ${
+              toast.tone === "sage" ? "bg-[#7A8B76] text-white" : "bg-[#C9A24B] text-white"
+            }`}
+          >
+            <Check size={16} /> {toast.msg}
+          </div>
+        </div>
+      )}
+
+      {/* Top bar */}
+      <div className="sticky top-0 z-40 bg-[#1F3A5F] text-white shadow-md">
+        <div className="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
+          <button onClick={() => goto("home")} className="flex items-center gap-2">
+            <BookOpen size={22} className="text-[#C9A24B]" />
+            <span className="disp font-extrabold text-lg">ورّاق</span>
+          </button>
+          {verified && (
+            <div className="flex items-center gap-1 text-[11px] text-[#C9A24B] disp font-bold">
+              <ShieldCheck size={14} /> حساب موثّق
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="max-w-md mx-auto pb-24">
+        {/* ---------------- HOME ---------------- */}
+        {screen === "home" && (
+          <div className="px-4 pt-5">
+            <div className="mb-5">
+              <h1 className="disp text-2xl font-extrabold text-[#1F3A5F]">اكتشف كتب مستعملة</h1>
+              <p className="text-sm text-[#5c5548] mt-1">بيع وشراء آمن، تواصل داخل التطبيق، عمولتنا بعد إتمام البيع فقط.</p>
+            </div>
+
+            <button
+              onClick={() => goto(verified ? "sellerForm" : "register")}
+              className="w-full mb-6 rounded-2xl bg-[#1F3A5F] text-white py-3.5 flex items-center justify-center gap-2 disp font-bold shadow-md active:scale-[0.98] transition"
+            >
+              <PlusCircle size={18} className="text-[#C9A24B]" />
+              أضف كتابك للبيع
+            </button>
+
+            <div className="grid gap-4">
+              {books.map((b) => (
+                <button
+                  key={b.id}
+                  onClick={() => setActiveBook(b) || goto("listing")}
+                  className="text-right bg-white rounded-2xl overflow-hidden shadow-sm border border-[#eee2c9] flex active:scale-[0.98] transition"
+                >
+                  <div className="w-24 shrink-0" style={{ background: b.cover }} />
+                  <div className="p-3 flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2">
+                      <h3 className="disp font-bold text-[#1F3A5F] text-[15px] truncate">{b.title}</h3>
+                      {b.mine && <STAMP tone="sage">إعلانك</STAMP>}
+                    </div>
+                    <p className="text-xs text-[#8a8272] mt-0.5">{b.author}</p>
+                    <div className="flex items-center justify-between mt-2">
+                      <span className="text-[11px] bg-[#FAF6ED] text-[#7A8B76] px-2 py-0.5 rounded-full font-semibold">{b.condition}</span>
+                      <span className="disp font-extrabold text-[#C9A24B] text-sm">{b.price.toFixed(1)} ر.ع</span>
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ---------------- LISTING DETAIL ---------------- */}
+        {screen === "listing" && activeBook && (
+          <div>
+            <button onClick={() => goto("home")} className="flex items-center gap-1 px-4 pt-4 text-[#1F3A5F] text-sm font-semibold">
+              <ChevronLeft size={16} /> رجوع
+            </button>
+            <div className="h-52 mx-4 mt-3 rounded-2xl shadow-md" style={{ background: activeBook.cover }} />
+            <div className="px-4 mt-4">
+              <h1 className="disp text-xl font-extrabold text-[#1F3A5F]">{activeBook.title}</h1>
+              <p className="text-sm text-[#8a8272] mt-1">{activeBook.author} · البائع: {activeBook.seller}</p>
+              <div className="flex items-center gap-2 mt-3">
+                <span className="text-xs bg-white border border-[#eee2c9] text-[#7A8B76] px-2.5 py-1 rounded-full font-semibold">
+                  الحالة: {activeBook.condition}
+                </span>
+                <STAMP tone="navy">توثيق OTP</STAMP>
+              </div>
+              <p className="text-sm text-[#4a453a] leading-7 mt-4">{activeBook.desc}</p>
+
+              <div className="mt-6 bg-white rounded-2xl p-4 border border-[#eee2c9]">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-[#8a8272]">السعر</span>
+                  <span className="disp font-extrabold text-2xl text-[#C9A24B]">{activeBook.price.toFixed(1)} ر.ع</span>
+                </div>
+                <p className="text-[11px] text-[#8a8272] mt-1">عمولة المنصة 20% تُخصم من البائع بعد استلامك للكتاب — لا رسوم إضافية عليك.</p>
+              </div>
+
+              <div className="flex gap-3 mt-5">
+                <button
+                  onClick={() => openChat(activeBook)}
+                  className="flex-1 rounded-xl border-2 border-[#1F3A5F] text-[#1F3A5F] py-3 disp font-bold flex items-center justify-center gap-2"
+                >
+                  <MessageCircle size={17} /> تواصل مع البائع
+                </button>
+                <button
+                  onClick={() => goto("checkout")}
+                  className="flex-1 rounded-xl bg-[#1F3A5F] text-white py-3 disp font-bold flex items-center justify-center gap-2"
+                >
+                  <ShoppingBag size={17} /> شراء الآن
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ---------------- CHAT (in-app only) ---------------- */}
+        {screen === "chat" && activeBook && (
+          <div className="flex flex-col h-[calc(100vh-56px)]">
+            <div className="px-4 pt-4 flex items-center gap-2">
+              <button onClick={() => goto("listing")} className="text-[#1F3A5F]">
+                <ChevronLeft size={20} />
+              </button>
+              <div className="w-9 h-9 rounded-full bg-[#1F3A5F] text-white flex items-center justify-center disp font-bold text-sm">
+                {activeBook.seller[0]}
+              </div>
+              <div>
+                <p className="disp font-bold text-[#1F3A5F] text-sm">{activeBook.seller}</p>
+                <p className="text-[10px] text-[#7A8B76] flex items-center gap-1">
+                  <ShieldCheck size={10} /> محادثة داخل التطبيق — رقم الهاتف مخفي
+                </p>
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 scrollbar-none">
+              {chatMessages.map((m, i) => (
+                <div key={i} className={`flex ${m.from === "me" ? "justify-start" : "justify-end"}`}>
+                  <div
+                    className={`max-w-[75%] px-3.5 py-2.5 rounded-2xl text-sm leading-6 ${
+                      m.from === "me" ? "bg-[#1F3A5F] text-white rounded-bl-sm" : "bg-white border border-[#eee2c9] text-[#2B2620] rounded-br-sm"
+                    }`}
+                  >
+                    {m.text}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="px-4 py-3 border-t border-[#eee2c9] bg-[#FAF6ED] flex items-center gap-2">
+              <input
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                placeholder="اكتب رسالتك..."
+                className="flex-1 rounded-full bg-white border border-[#eee2c9] px-4 py-2.5 text-sm outline-none focus:border-[#C9A24B]"
+              />
+              <button onClick={sendMessage} className="w-10 h-10 rounded-full bg-[#1F3A5F] text-white flex items-center justify-center shrink-0">
+                <Send size={16} />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ---------------- REGISTER ---------------- */}
+        {screen === "register" && (
+          <div className="px-4 pt-8">
+            <h1 className="disp text-xl font-extrabold text-[#1F3A5F]">إنشاء حساب بائع</h1>
+            <p className="text-sm text-[#8a8272] mt-1 mb-6">نحتاج بياناتك الأساسية وتوثيق رقم هاتفك.</p>
+
+            <label className="text-xs font-semibold text-[#5c5548] disp">الاسم الكامل</label>
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="مثال: أحمد الكندي"
+              className="w-full mt-1.5 mb-4 rounded-xl border border-[#eee2c9] bg-white px-4 py-3 text-sm outline-none focus:border-[#C9A24B]"
+            />
+
+            <label className="text-xs font-semibold text-[#5c5548] disp">رقم الهاتف</label>
+            <div className="flex items-center mt-1.5 mb-6 rounded-xl border border-[#eee2c9] bg-white px-4 py-3 focus-within:border-[#C9A24B]">
+              <Phone size={16} className="text-[#8a8272] ml-2" />
+              <span className="text-sm text-[#8a8272] ml-1">968+</span>
+              <input
+                value={phone}
+                onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 8))}
+                placeholder="9xxxxxxx"
+                className="flex-1 text-sm outline-none bg-transparent"
+              />
+            </div>
+
+            <button
+              onClick={() => {
+                if (!name || phone.length < 8) {
+                  showToast("الرجاء إدخال الاسم ورقم هاتف صحيح", "gold");
+                  return;
+                }
+                goto("otp");
+              }}
+              className="w-full rounded-xl bg-[#1F3A5F] text-white py-3.5 disp font-bold"
+            >
+              إرسال رمز التفعيل
+            </button>
+          </div>
+        )}
+
+        {/* ---------------- OTP ---------------- */}
+        {screen === "otp" && (
+          <div className="px-4 pt-8 text-center">
+            <div className="w-16 h-16 rounded-full bg-[#1F3A5F] text-[#C9A24B] flex items-center justify-center mx-auto mb-4">
+              <Phone size={26} />
+            </div>
+            <h1 className="disp text-xl font-extrabold text-[#1F3A5F]">تحقق من رقم هاتفك</h1>
+            <p className="text-sm text-[#8a8272] mt-1 mb-8">
+              أرسلنا رمزاً مكوّناً من 4 أرقام إلى <span className="font-bold text-[#1F3A5F]">968+{phone}</span>
+            </p>
+
+            <div className="flex justify-center gap-3 mb-6" dir="ltr">
+              {otpDigits.map((d, i) => (
+                <input
+                  key={i}
+                  ref={(el) => (otpRefs.current[i] = el)}
+                  value={d}
+                  onChange={(e) => handleOtpChange(i, e.target.value)}
+                  maxLength={1}
+                  inputMode="numeric"
+                  className="w-12 h-14 text-center text-xl font-bold rounded-xl border-2 border-[#eee2c9] bg-white outline-none focus:border-[#C9A24B]"
+                />
+              ))}
+            </div>
+
+            <p className="text-xs text-[#8a8272]">
+              {seconds > 0 ? (
+                <>يمكنك إعادة الإرسال خلال {seconds} ثانية</>
+              ) : (
+                <button className="text-[#1F3A5F] font-bold underline">إعادة إرسال الرمز</button>
+              )}
+            </p>
+            <p className="text-[10px] text-[#b5ac97] mt-6">تجربة MVP — أدخل أي 4 أرقام للمتابعة</p>
+          </div>
+        )}
+
+        {/* ---------------- SELLER FORM ---------------- */}
+        {screen === "sellerForm" && (
+          <div className="px-4 pt-6">
+            <div className="mb-5 flex items-center gap-2">
+              <STAMP tone="sage">
+                <Check size={12} /> موثّق
+              </STAMP>
+            </div>
+            <h1 className="disp text-xl font-extrabold text-[#1F3A5F] mb-5">أضف كتاباً للبيع</h1>
+
+            <label className="text-xs font-semibold text-[#5c5548] disp">عنوان الكتاب</label>
+            <input
+              value={newBook.title}
+              onChange={(e) => setNewBook({ ...newBook, title: e.target.value })}
+              placeholder="مثال: كليلة ودمنة"
+              className="w-full mt-1.5 mb-4 rounded-xl border border-[#eee2c9] bg-white px-4 py-3 text-sm outline-none focus:border-[#C9A24B]"
+            />
+
+            <label className="text-xs font-semibold text-[#5c5548] disp">المؤلف</label>
+            <input
+              value={newBook.author}
+              onChange={(e) => setNewBook({ ...newBook, author: e.target.value })}
+              placeholder="اسم المؤلف"
+              className="w-full mt-1.5 mb-4 rounded-xl border border-[#eee2c9] bg-white px-4 py-3 text-sm outline-none focus:border-[#C9A24B]"
+            />
+
+            <label className="text-xs font-semibold text-[#5c5548] disp">حالة الكتاب</label>
+            <div className="flex gap-2 mt-1.5 mb-4">
+              {["ممتاز", "جيد", "مقبول"].map((c) => (
+                <button
+                  key={c}
+                  onClick={() => setNewBook({ ...newBook, condition: c })}
+                  className={`flex-1 py-2.5 rounded-xl text-sm font-semibold border-2 transition ${
+                    newBook.condition === c ? "border-[#1F3A5F] bg-[#1F3A5F] text-white" : "border-[#eee2c9] bg-white text-[#5c5548]"
+                  }`}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+
+            <label className="text-xs font-semibold text-[#5c5548] disp">السعر (ريال عُماني)</label>
+            <input
+              value={newBook.price}
+              onChange={(e) => setNewBook({ ...newBook, price: e.target.value.replace(/[^\d.]/g, "") })}
+              placeholder="0.0"
+              className="w-full mt-1.5 mb-4 rounded-xl border border-[#eee2c9] bg-white px-4 py-3 text-sm outline-none focus:border-[#C9A24B]"
+            />
+
+            <label className="text-xs font-semibold text-[#5c5548] disp">وصف مختصر</label>
+            <textarea
+              value={newBook.desc}
+              onChange={(e) => setNewBook({ ...newBook, desc: e.target.value })}
+              placeholder="حالة الصفحات، أي ملاحظات..."
+              rows={3}
+              className="w-full mt-1.5 mb-4 rounded-xl border border-[#eee2c9] bg-white px-4 py-3 text-sm outline-none focus:border-[#C9A24B] resize-none"
+            />
+
+            <label className="text-xs font-semibold text-[#5c5548] disp block mb-1.5">صورة الكتاب (إلزامية)</label>
+            <button className="w-full mb-6 rounded-xl border-2 border-dashed border-[#C9A24B] bg-white py-6 flex flex-col items-center gap-1.5 text-[#C9A24B]">
+              <Camera size={22} />
+              <span className="text-xs font-semibold">اضغط لإضافة صورة</span>
+            </button>
+
+            <div className="bg-[#FAF6ED] border border-[#eee2c9] rounded-xl p-3 mb-5 flex items-start gap-2">
+              <ShieldCheck size={16} className="text-[#7A8B76] shrink-0 mt-0.5" />
+              <p className="text-[11px] text-[#5c5548] leading-5">
+                لا توجد أي رسوم عند النشر. عمولة 20% تُخصم تلقائياً فقط بعد إتمام البيع وتأكيد المشتري للاستلام.
+              </p>
+            </div>
+
+            <button onClick={submitListing} className="w-full rounded-xl bg-[#1F3A5F] text-white py-3.5 disp font-bold">
+              نشر الإعلان
+            </button>
+          </div>
+        )}
+
+        {/* ---------------- CHECKOUT ---------------- */}
+        {screen === "checkout" && activeBook && (
+          <div className="px-4 pt-6">
+            <button onClick={() => goto("listing")} className="flex items-center gap-1 text-[#1F3A5F] text-sm font-semibold mb-5">
+              <ChevronLeft size={16} /> رجوع
+            </button>
+            <h1 className="disp text-xl font-extrabold text-[#1F3A5F] mb-5">إتمام الشراء</h1>
+
+            <div className="bg-white rounded-2xl border border-[#eee2c9] p-4 flex items-center gap-3 mb-5">
+              <div className="w-14 h-14 rounded-lg shrink-0" style={{ background: activeBook.cover }} />
+              <div className="flex-1 min-w-0">
+                <p className="disp font-bold text-[#1F3A5F] text-sm truncate">{activeBook.title}</p>
+                <p className="text-xs text-[#8a8272]">{activeBook.seller}</p>
+              </div>
+              <span className="disp font-extrabold text-[#C9A24B]">{activeBook.price.toFixed(1)} ر.ع</span>
+            </div>
+
+            <p className="text-xs font-semibold text-[#5c5548] disp mb-2">اختر طريقة الدفع</p>
+            <div className="grid grid-cols-2 gap-3 mb-5">
+              <button
+                onClick={() => setPaymentMethod("thawani")}
+                className={`rounded-xl border-2 py-4 flex flex-col items-center gap-1.5 transition ${
+                  paymentMethod === "thawani" ? "border-[#1F3A5F] bg-[#1F3A5F]/5" : "border-[#eee2c9] bg-white"
+                }`}
+              >
+                <span className="disp font-extrabold text-[#1F3A5F]">ثواني</span>
+                <span className="text-[10px] text-[#8a8272]">Thawani — محلي</span>
+              </button>
+              <button
+                onClick={() => setPaymentMethod("paypal")}
+                className={`rounded-xl border-2 py-4 flex flex-col items-center gap-1.5 transition ${
+                  paymentMethod === "paypal" ? "border-[#1F3A5F] bg-[#1F3A5F]/5" : "border-[#eee2c9] bg-white"
+                }`}
+              >
+                <span className="disp font-extrabold text-[#00457C]">PayPal</span>
+                <span className="text-[10px] text-[#8a8272]">دولي</span>
+              </button>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-[#eee2c9] p-4 mb-5 space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-[#8a8272]">قيمة الكتاب</span>
+                <span className="font-semibold text-[#2B2620]">{activeBook.price.toFixed(1)} ر.ع</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-[#8a8272]">رسوم الشحن</span>
+                <span className="font-semibold text-[#7A8B76]">يتفق عليها مع البائع</span>
+              </div>
+              <div className="border-t border-dashed border-[#eee2c9] pt-2 flex justify-between">
+                <span className="disp font-bold text-[#1F3A5F]">الإجمالي المدفوع الآن</span>
+                <span className="disp font-extrabold text-[#C9A24B] text-lg">{activeBook.price.toFixed(1)} ر.ع</span>
+              </div>
+            </div>
+
+            <div className="bg-[#FAF6ED] border border-[#eee2c9] rounded-xl p-3 mb-6 flex items-start gap-2">
+              <ShieldCheck size={16} className="text-[#7A8B76] shrink-0 mt-0.5" />
+              <p className="text-[11px] text-[#5c5548] leading-5">
+                مبلغك يُحفظ بأمان لدى المنصة حتى تؤكد استلام الكتاب. عندها فقط يُحوَّل المبلغ للبائع بعد خصم عمولتنا.
+              </p>
+            </div>
+
+            <button
+              onClick={() => {
+                setOrderStatus("paid");
+                goto("payConfirm");
+              }}
+              className="w-full rounded-xl bg-[#1F3A5F] text-white py-3.5 disp font-bold"
+            >
+              ادفع {activeBook.price.toFixed(1)} ر.ع عبر {paymentMethod === "thawani" ? "ثواني" : "PayPal"}
+            </button>
+          </div>
+        )}
+
+        {/* ---------------- PAYMENT CONFIRM / ORDER TRACKING ---------------- */}
+        {screen === "payConfirm" && activeBook && (
+          <div className="px-4 pt-8">
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 rounded-full bg-[#7A8B76] text-white flex items-center justify-center mx-auto mb-3">
+                <Check size={28} />
+              </div>
+              <h1 className="disp text-xl font-extrabold text-[#1F3A5F]">تم الدفع بنجاح</h1>
+              <p className="text-sm text-[#8a8272] mt-1">مبلغك محفوظ لدى المنصة حتى تأكيد الاستلام</p>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-[#eee2c9] p-4 mb-5">
+              <p className="disp font-bold text-[#1F3A5F] text-sm mb-4">حالة الطلب</p>
+              {[
+                { key: "paid", label: "تم الدفع وحجز المبلغ", icon: Wallet },
+                { key: "shipped", label: "قام البائع بالشحن", icon: Truck },
+                { key: "delivered", label: "تأكيد استلامك للكتاب", icon: Package },
+                { key: "settled", label: "تحويل الأموال وخصم العمولة", icon: Check },
+              ].map((step, i, arr) => {
+                const order = ["paid", "shipped", "delivered", "settled"];
+                const currentIdx = order.indexOf(orderStatus);
+                const stepIdx = order.indexOf(step.key);
+                const done = stepIdx <= currentIdx;
+                return (
+                  <div key={step.key} className="flex gap-3">
+                    <div className="flex flex-col items-center">
+                      <div
+                        className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                          done ? "bg-[#7A8B76] text-white" : "bg-[#eee2c9] text-[#b5ac97]"
+                        }`}
+                      >
+                        <step.icon size={15} />
+                      </div>
+                      {i < arr.length - 1 && <div className={`w-0.5 h-8 ${done ? "bg-[#7A8B76]" : "bg-[#eee2c9]"}`} />}
+                    </div>
+                    <div className="pb-8 pt-1">
+                      <p className={`text-sm font-semibold ${done ? "text-[#2B2620]" : "text-[#b5ac97]"}`}>{step.label}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {orderStatus === "paid" && (
+              <button
+                onClick={() => setOrderStatus("shipped")}
+                className="w-full rounded-xl border-2 border-[#1F3A5F] text-[#1F3A5F] py-3 disp font-bold mb-3"
+              >
+                (محاكاة) البائع شحن الكتاب
+              </button>
+            )}
+            {orderStatus === "shipped" && (
+              <button
+                onClick={() => setOrderStatus("delivered")}
+                className="w-full rounded-xl bg-[#1F3A5F] text-white py-3 disp font-bold mb-3"
+              >
+                تأكيد استلامي للكتاب
+              </button>
+            )}
+            {orderStatus === "delivered" && (
+              <button
+                onClick={() => {
+                  setOrderStatus("settled");
+                  showToast("تم خصم العمولة وتحويل الباقي للبائع", "sage");
+                }}
+                className="w-full rounded-xl bg-[#C9A24B] text-white py-3 disp font-bold mb-3"
+              >
+                (محاكاة) تشغيل الخصم التلقائي للعمولة
+              </button>
+            )}
+
+            {orderStatus === "settled" && (
+              <div className="mt-2">
+                <div className="flex justify-center mb-4">
+                  <STAMP tone="sage">
+                    <Check size={12} /> إيصال العمولة
+                  </STAMP>
+                </div>
+                <div className="bg-white rounded-2xl border border-[#eee2c9] p-4 space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-[#8a8272]">قيمة الكتاب</span>
+                    <span className="font-semibold">{activeBook.price.toFixed(1)} ر.ع</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-[#8a8272]">عمولة المنصة (20%)</span>
+                    <span className="font-semibold text-[#C9A24B]">− {commission.toFixed(2)} ر.ع</span>
+                  </div>
+                  <div className="border-t border-dashed border-[#eee2c9] pt-2 flex justify-between">
+                    <span className="disp font-bold text-[#1F3A5F]">صافي مستحقات البائع</span>
+                    <span className="disp font-extrabold text-[#7A8B76] text-lg">{sellerNet.toFixed(2)} ر.ع</span>
+                  </div>
+                </div>
+                <button onClick={() => goto("home")} className="w-full mt-5 rounded-xl bg-[#1F3A5F] text-white py-3.5 disp font-bold">
+                  العودة للرئيسية
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Bottom nav */}
+      <div className="fixed bottom-0 inset-x-0 bg-white border-t border-[#eee2c9] z-40">
+        <div className="max-w-md mx-auto flex items-center justify-around py-2.5">
+          <button onClick={() => goto("home")} className={`flex flex-col items-center gap-0.5 px-4 ${screen === "home" ? "text-[#1F3A5F]" : "text-[#b5ac97]"}`}>
+            <BookOpen size={20} />
+            <span className="text-[10px] font-semibold">تصفح</span>
+          </button>
+          <button
+            onClick={() => goto(verified ? "sellerForm" : "register")}
+            className={`flex flex-col items-center gap-0.5 px-4 ${screen === "sellerForm" || screen === "register" || screen === "otp" ? "text-[#1F3A5F]" : "text-[#b5ac97]"}`}
+          >
+            <PlusCircle size={20} />
+            <span className="text-[10px] font-semibold">أضف كتاباً</span>
+          </button>
+          <button
+            onClick={() => (activeBook ? goto("payConfirm") : showToast("لا يوجد طلب نشط بعد", "gold"))}
+            className={`flex flex-col items-center gap-0.5 px-4 ${screen === "payConfirm" ? "text-[#1F3A5F]" : "text-[#b5ac97]"}`}
+          >
+            <Truck size={20} />
+            <span className="text-[10px] font-semibold">طلباتي</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
