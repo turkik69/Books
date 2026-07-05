@@ -8,28 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
-<style>/* تحسينات الوضع الأفقي */
-@media (orientation: landscape) {
-  /* توسعة الحاوية لاستغلال المساحة الأفقية */
-  .max-w-md {
-    max-width: 720px !important;
-  }
-
-  /* جعل شبكة الكتب عمودين بدلاً من واحد */
-  .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-
-  /* تعديل حجم صورة الغلاف في صفحة الكتاب */
-  .w-full.h-56 {
-    height: 220px !important;
-  }
-
-  /* المحافظة على عرض الأزرار السفلية */
-  .bottom-0.inset-x-0 .max-w-md {
-    max-width: 720px !important;
-  }
-}
+<style>
   html, body, #root { height: 100%; }
   body { margin: 0; font-family: 'Noto Naskh Arabic', serif; background:#F7F1E3; }
   .disp { font-family: 'Tajawal', sans-serif; }
