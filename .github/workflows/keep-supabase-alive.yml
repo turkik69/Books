@@ -1,0 +1,16 @@
+name: إبقاء منصة ورّاق نشطة (Keep Supabase Alive)
+
+on:
+  schedule:
+    - cron: "0 6 */3 * *"
+  workflow_dispatch: {}
+
+jobs:
+  ping-supabase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: استعلام بسيط وآمن (قراءة فقط) لتنشيط المشروع
+        run: |
+          curl -s -o /dev/null -w "الحالة: %{http_code}\n" \
+            "https://eooytvurkabmiooknbgk.supabase.co/rest/v1/books?select=id&limit=1" \
+            -H "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvb3l0dnVya2FibWlvb2tuYmdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwODY1NDcsImV4cCI6MjA5ODY2MjU0N30.deedSR1LO626DI42ANa6R9PX4USMZR_ss9SVrL_BR7s"
