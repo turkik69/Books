@@ -1,11 +1,11 @@
-const CACHE_NAME = "warraq-shell-v21";
+const CACHE_NAME = "warraq-shell-v22";
 const RUNTIME_CACHE = "warraq-runtime-v1";
 
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./app.js?v=20260918-18",
-  "./styles.css?v=20260918-18",
+  "./app.js?v=20260918-19",
+  "./styles.css?v=20260918-19",
   "./privacy.html",
   "./terms.html"
 ];
