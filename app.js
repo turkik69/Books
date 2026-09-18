@@ -248,13 +248,39 @@ React.createElement("div",{className:"report-case-modal-v3",onClick:e=>e.stopPro
     )
   ),
   React.createElement("div",{className:"report-case-scroll-v3"},
-    React.createElement("section",{className:"report-case-meta-v3"},
-      reportCaseMode==="admin"&&React.createElement("div",null,React.createElement("span",null,"صاحب البلاغ"),React.createElement("strong",null,selectedReport.reporter_name||selectedReport.reporter_username||"—"),selectedReport.reporter_email&&React.createElement("small",{dir:"ltr"},selectedReport.reporter_email),selectedReport.reporter_phone&&React.createElement("small",{dir:"ltr"},selectedReport.reporter_phone)),
-      reportCaseMode==="admin"&&React.createElement("div",null,React.createElement("span",null,"المبلّغ عليه"),React.createElement("strong",null,selectedReport.reported_name||selectedReport.reported_username||"—")),
+    React.createElement("section",{className:"report-case-meta-v3 report-parties-grid-v4"},
+      reportCaseMode==="admin"&&React.createElement("div",{className:"report-party-card-v4 reporter"},
+        React.createElement("div",{className:"report-party-head-v4"},React.createElement("span",{className:"report-party-badge-v4"},"المُبلِّغ"),React.createElement("strong",null,reportCaseDetails?.reporter?.full_name||selectedReport.reporter_name||selectedReport.reporter_username||"—")),
+        React.createElement("small",null,"@"+(reportCaseDetails?.reporter?.username||selectedReport.reporter_username||"—")),
+        (reportCaseDetails?.reporter?.email||selectedReport.reporter_email)&&React.createElement("small",{dir:"ltr"},reportCaseDetails?.reporter?.email||selectedReport.reporter_email),
+        (reportCaseDetails?.reporter?.phone||selectedReport.reporter_phone)&&React.createElement("small",{dir:"ltr"},reportCaseDetails?.reporter?.phone||selectedReport.reporter_phone),
+        reportCaseDetails?.reporter?.city&&React.createElement("small",null,"المدينة: ",reportCaseDetails.reporter.city)
+      ),
+      reportCaseMode==="admin"&&React.createElement("div",{className:"report-party-card-v4 reported"},
+        React.createElement("div",{className:"report-party-head-v4"},React.createElement("span",{className:"report-party-badge-v4"},"المُبلَّغ عليه"),React.createElement("strong",null,reportCaseDetails?.reported_user?.full_name||selectedReport.reported_name||selectedReport.reported_username||"—")),
+        React.createElement("small",null,"@"+(reportCaseDetails?.reported_user?.username||selectedReport.reported_username||"—")),
+        reportCaseDetails?.reported_user?.email&&React.createElement("small",{dir:"ltr"},reportCaseDetails.reported_user.email),
+        reportCaseDetails?.reported_user?.phone&&React.createElement("small",{dir:"ltr"},reportCaseDetails.reported_user.phone),
+        reportCaseDetails?.reported_user?.city&&React.createElement("small",null,"المدينة: ",reportCaseDetails.reported_user.city)
+      ),
       React.createElement("div",{className:"wide"},React.createElement("span",null,"الكتاب المرتبط"),React.createElement("strong",null,selectedReport.book_title||"لا يوجد كتاب مرتبط")),
       React.createElement("div",{className:"wide"},React.createElement("span",null,"تفاصيل البلاغ"),React.createElement("p",null,selectedReport.details||"لم تتم إضافة تفاصيل."))
     ),
     selectedReport.book_image_url&&React.createElement("div",{className:"report-book-preview-v3"},React.createElement("img",{src:selectedReport.book_image_url,alt:selectedReport.book_title||"الكتاب"}),React.createElement("div",null,React.createElement("span",null,"الإعلان محل البلاغ"),React.createElement("strong",null,selectedReport.book_title||"كتاب"))),
+    reportCaseMode==="admin"&&React.createElement("section",{className:"report-party-conversation-v4"},
+      React.createElement("div",{className:"report-thread-title-v3"},
+        React.createElement("div",null,React.createElement("span",{className:"section-eyebrow"},"سياق البلاغ"),React.createElement("h3",null,"المحادثة الأصلية بين الطرفين")),
+        React.createElement("span",null,reportPartyConversation.length," رسالة")
+      ),
+      React.createElement("div",{className:"report-party-thread-v4"},
+        reportPartyConversation.length===0?
+          React.createElement("div",{className:"report-no-party-messages-v4"},React.createElement("p",null,"لا توجد محادثة مرتبطة بهذا البلاغ والكتاب.")):
+          reportPartyConversation.map(e=>{const isReporter=e.sender_id===selectedReport.reporter_id;return React.createElement("div",{key:e.id,className:"party-message-v4 "+(isReporter?"reporter-msg":"reported-msg")},
+            React.createElement("div",{className:"party-message-sender-v4"},React.createElement("span",null,isReporter?"المُبلِّغ":"المُبلَّغ عليه"),React.createElement("small",null,new Date(e.created_at).toLocaleString("ar-OM"))),
+            React.createElement("p",null,e.content)
+          )})
+      )
+    ),
     reportCaseMode==="admin"&&React.createElement("section",{className:"report-admin-actions-v3"},
       React.createElement("div",{className:"report-action-heading-v3"},React.createElement("div",null,React.createElement("span",{className:"section-eyebrow"},"قرار الإدارة"),React.createElement("h3",null,"معالجة البلاغ")),selectedReport.status==="open"&&React.createElement("button",{onClick:()=>startReportReview(selectedReport),disabled:reportCaseBusy,className:"case-review-btn-v3"},"بدء المراجعة")),
       React.createElement("label",{className:"case-field-v3"},React.createElement("span",null,"ملاحظة القرار"),React.createElement("textarea",{value:reportAdminNote,onChange:e=>setReportAdminNote(e.target.value),placeholder:"اكتب نتيجة المراجعة أو سبب الإجراء..."})),
