@@ -96,3 +96,61 @@ self.addEventListener("fetch", event => {
     })
   );
 });
+
+
+self.addEventListener("push", event => {
+  let data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch {
+    data = { title: "ورّاق", body: event.data ? event.data.text() : "" };
+  }
+
+  const title = data.title || "ورّاق";
+  const options = {
+    body: data.body || "لديك إشعار جديد في ورّاق",
+    dir: "rtl",
+    lang: "ar",
+    tag: data.notification_id ? "warraq-" + data.notification_id : "warraq-notification",
+    renotify: true,
+    data: {
+      notification_id: data.notification_id || null,
+      type: data.type || "system",
+      book_id: data.book_id || null,
+      order_id: data.order_id || null,
+      url: data.url || "./?open=notifications"
+    },
+    timestamp: data.created_at ? Date.parse(data.created_at) : Date.now(),
+    vibrate: [120, 60, 120]
+  };
+
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener("notificationclick", event => {
+  event.notification.close();
+
+  event.waitUntil((async () => {
+    const data = event.notification.data || {};
+    const targetUrl = new URL(data.url || "./?open=notifications", self.location.origin).href;
+    const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+
+    for (const client of windows) {
+      if (new URL(client.url).origin === self.location.origin) {
+        await client.focus();
+        client.postMessage({
+          type: "WARAAQ_NOTIFICATION_CLICK",
+          notification_id: data.notification_id || null,
+          notification_type: data.type || "system",
+          book_id: data.book_id || null,
+          order_id: data.order_id || null
+        });
+        return;
+      }
+    }
+
+    if (self.clients.openWindow) {
+      await self.clients.openWindow(targetUrl);
+    }
+  })());
+});
