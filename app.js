@@ -87,11 +87,11 @@ React.createElement("div",{className:"auth-card-v3"},
       ),
       H==="signup"&&React.createElement("div",{className:"field-v3"},
         React.createElement("label",null,"البريد الإلكتروني"),
-        React.createElement("div",{className:"field-shell-v3"},React.createElement(ve,{size:17}),React.createElement("input",{value:Me,onChange:e=>It(e.target.value),placeholder:"example@email.com",dir:"ltr",inputMode:"email",autoComplete:"email",spellCheck:!1,autoCapitalize:"none"}))
+        React.createElement("div",{className:"field-shell-v3"},React.createElement("span",{className:"field-glyph-v3"},"✉"),React.createElement("input",{value:Me,onChange:e=>It(e.target.value),placeholder:"example@email.com",dir:"ltr",inputMode:"email",autoComplete:"email",spellCheck:!1,autoCapitalize:"none"}))
       ),
       React.createElement("div",{className:"field-v3"},
         React.createElement("label",null,"كلمة السر"),
-        React.createElement("div",{className:"field-shell-v3"},React.createElement(Ks,{size:17}),React.createElement("input",{value:T,onChange:e=>Mt(e.target.value),type:"password",placeholder:"10 أحرف على الأقل",dir:"ltr",autoComplete:H==="signup"?"new-password":"current-password"}))
+        React.createElement("div",{className:"field-shell-v3"},React.createElement("span",{className:"field-glyph-v3"},"●"),React.createElement("input",{value:T,onChange:e=>Mt(e.target.value),type:"password",placeholder:"10 أحرف على الأقل",dir:"ltr",autoComplete:H==="signup"?"new-password":"current-password"}))
       )
     ),
     H==="signup"&&React.createElement("div",{className:"password-hints-v3"},
