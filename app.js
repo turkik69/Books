@@ -41,7 +41,7 @@ React.createElement("section",{className:"home-search-section"},
 React.createElement("section",{className:"home-categories-v3"},
   React.createElement("div",{className:"section-title-row"},React.createElement("div",null,React.createElement("span",{className:"section-eyebrow"},"استكشف"),React.createElement("h2",null,"التصنيفات"))),
   React.createElement("div",{className:"category-grid-v3"},
-    [["📚","أدب وروايات"],["🎓","تعليم"],["🧠","تطوير الذات"],["💼","أعمال"],["🔬","علوم"],["📖","أخرى"]].map(([icon,label])=>React.createElement("button",{key:label,onClick:()=>U(s=>({...s,category:label==="أخرى"?"":label})),className:"category-card-v3"},React.createElement("span",{className:"category-icon-v3"},icon),React.createElement("span",null,label)))
+    ([...new Set(ge.map(e=>e.category).filter(Boolean))].slice(0,6).map((label,idx)=>[["📚","🎓","🧠","💼","🔬","📖"][idx]||"📖",label])).map(([icon,label])=>React.createElement("button",{key:label,onClick:()=>U(s=>({...s,category:label})),className:"category-card-v3"},React.createElement("span",{className:"category-icon-v3"},icon),React.createElement("span",null,label)))
   )
 ),
 React.createElement("section",{className:"home-books-section"},
