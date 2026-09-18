@@ -16,9 +16,9 @@ Warraq shares this project with unrelated Ezpa tables. Do not modify tables pref
 
 ### Edge Functions
 - `warraq-create-thawani-session`
-- `warraq-verify-thawani-payment`
+- `warraq-verify-thawani-payment`\n- `warraq-thawani-webhook`
 
-Both require valid Supabase JWTs.
+`warraq-create-thawani-session` and `warraq-verify-thawani-payment` require valid Supabase JWTs. The webhook is intentionally public because Thawani cannot send a user JWT; it never trusts the incoming event as payment proof and re-verifies the stored session directly with Thawani using the server-side secret key.
 
 ### Required Edge Function secrets
 Do not commit values to GitHub:
@@ -39,7 +39,7 @@ In Supabase Dashboard:
 3. Authentication → Password Security
    - Enable leaked-password protection.
 
-## Payment rules
+### Thawani webhook\nConfigure the merchant portal webhook to call:\n`https://eooytvurkabmiooknbgk.supabase.co/functions/v1/warraq-thawani-webhook`\n\nThe webhook independently retrieves the checkout session from Thawani before changing order state.\n\n## Payment rules
 - Frontend never marks an order paid.
 - Payment confirmation is performed server-side against Thawani.
 - A book is reserved while payment is pending.
