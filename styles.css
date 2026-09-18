@@ -2199,3 +2199,141 @@ html, body, #root, .warraq-app{
     max-width:72%;
   }
 }
+
+
+/* Warraq admin reports v5 */
+.admin-report-dashboard-v5{
+  display:grid;
+  gap:12px;
+  margin-bottom:2px;
+}
+.admin-report-metrics-v5{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:9px;
+}
+.report-metric-v5{
+  background:#fff;
+  border:1px solid rgba(18,59,51,.08);
+  border-radius:17px;
+  padding:12px 9px;
+  box-shadow:0 9px 24px rgba(18,59,51,.05);
+  text-align:center;
+}
+.report-metric-v5 strong{
+  display:block;
+  color:var(--forest);
+  font-family:'Tajawal',sans-serif;
+  font-size:20px;
+  line-height:1;
+  font-weight:900;
+}
+.report-metric-v5 span{
+  display:block;
+  margin-top:6px;
+  color:var(--muted);
+  font-family:'Tajawal',sans-serif;
+  font-size:9px;
+  font-weight:800;
+}
+.report-metric-v5.reviewing strong{color:#B8863B}
+.report-metric-v5.critical strong{color:#A44736}
+.report-metric-v5.closed strong{color:#647F70}
+.admin-report-filters-v5{
+  display:flex;
+  gap:7px;
+  overflow-x:auto;
+  padding:2px 1px 4px;
+  scrollbar-width:none;
+}
+.admin-report-filters-v5::-webkit-scrollbar{display:none}
+.admin-report-filters-v5 button{
+  flex:none;
+  min-height:36px;
+  padding:0 13px;
+  border-radius:999px;
+  border:1px solid rgba(18,59,51,.10);
+  background:#fff;
+  color:#6D756F;
+  font-family:'Tajawal',sans-serif;
+  font-size:10px;
+  font-weight:900;
+}
+.admin-report-filters-v5 button.active{
+  background:#123B33;
+  color:#fff;
+  border-color:#123B33;
+  box-shadow:0 8px 18px rgba(18,59,51,.16);
+}
+.report-book-preview-clickable-v5{
+  cursor:pointer;
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+}
+.report-book-preview-clickable-v5:hover{
+  transform:translateY(-1px);
+  border-color:rgba(193,138,61,.35);
+  box-shadow:0 14px 32px rgba(18,59,51,.08);
+}
+.report-book-preview-clickable-v5 small{
+  display:block;
+  margin-top:5px;
+  color:#C18A3D;
+  font-family:'Tajawal',sans-serif;
+  font-size:9px;
+  font-weight:800;
+}
+.report-status-timeline-v5{
+  background:#fff;
+  border:1px solid rgba(18,59,51,.08);
+  border-radius:20px;
+  padding:16px;
+  box-shadow:0 10px 28px rgba(18,59,51,.05);
+}
+.report-timeline-list-v5{
+  display:grid;
+  gap:0;
+  margin-top:8px;
+}
+.report-timeline-item-v5{
+  position:relative;
+  display:grid;
+  grid-template-columns:16px 1fr;
+  gap:10px;
+  padding:0 0 16px;
+}
+.report-timeline-item-v5:last-child{padding-bottom:0}
+.report-timeline-item-v5:not(:last-child)::after{
+  content:"";
+  position:absolute;
+  right:7px;
+  top:16px;
+  bottom:0;
+  width:1px;
+  background:rgba(18,59,51,.13);
+}
+.report-timeline-item-v5 i{
+  width:15px;
+  height:15px;
+  border-radius:50%;
+  margin-top:2px;
+  background:#647F70;
+  border:4px solid #E7EFEA;
+  z-index:1;
+}
+.report-timeline-item-v5.danger i{background:#A44736;border-color:#F5E7E3}
+.report-timeline-item-v5 strong{
+  display:block;
+  color:#123B33;
+  font-family:'Tajawal',sans-serif;
+  font-size:11px;
+  font-weight:900;
+}
+.report-timeline-item-v5 small{
+  display:block;
+  margin-top:3px;
+  color:#7A807C;
+  font-size:9px;
+}
+@media(max-width:640px){
+  .admin-report-metrics-v5{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
