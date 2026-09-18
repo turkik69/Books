@@ -267,6 +267,15 @@ React.createElement("div",{className:"report-case-modal-v3",onClick:e=>e.stopPro
       React.createElement("div",{className:"wide"},React.createElement("span",null,"تفاصيل البلاغ"),React.createElement("p",null,selectedReport.details||"لم تتم إضافة تفاصيل."))
     ),
     selectedReport.book_image_url&&React.createElement("div",{className:"report-book-preview-v3 report-book-preview-clickable-v5",onClick:openReportBook,role:"button",tabIndex:0,onKeyDown:e=>{(e.key==="Enter"||e.key===" ")&&(e.preventDefault(),openReportBook())}},React.createElement("img",{src:selectedReport.book_image_url,alt:selectedReport.book_title||"الكتاب"}),React.createElement("div",null,React.createElement("span",null,"الإعلان محل البلاغ"),React.createElement("strong",null,selectedReport.book_title||"كتاب"),React.createElement("small",null,"اضغط لفتح صفحة الكتاب"))),
+    reportCaseMode==="admin"&&React.createElement("section",{className:"report-status-timeline-v5"},
+      React.createElement("div",{className:"report-thread-title-v3"},React.createElement("div",null,React.createElement("span",{className:"section-eyebrow"},"سجل الحالة"),React.createElement("h3",null,"مسار معالجة البلاغ"))),
+      React.createElement("div",{className:"report-timeline-list-v5"},
+        React.createElement("div",{className:"report-timeline-item-v5 done"},React.createElement("i",null),React.createElement("div",null,React.createElement("strong",null,"تم استلام البلاغ"),React.createElement("small",null,new Date(selectedReport.created_at).toLocaleString("ar-OM")))),
+        selectedReport.status!=="open"&&React.createElement("div",{className:"report-timeline-item-v5 done"},React.createElement("i",null),React.createElement("div",null,React.createElement("strong",null,"بدأت المراجعة"),React.createElement("small",null,selectedReport.handled_by_name?("بواسطة "+selectedReport.handled_by_name):"تم إسناد البلاغ للمراجعة"))),
+        selectedReport.violation_id&&React.createElement("div",{className:"report-timeline-item-v5 danger"},React.createElement("i",null),React.createElement("div",null,React.createElement("strong",null,"تم تسجيل مخالفة"),React.createElement("small",null,selectedReport.admin_note||"تم اتخاذ إجراء إداري"))),
+        selectedReport.resolved_at&&React.createElement("div",{className:"report-timeline-item-v5 done"},React.createElement("i",null),React.createElement("div",null,React.createElement("strong",null,selectedReport.status==="dismissed"?"أُغلق دون مخالفة":"تم حل البلاغ"),React.createElement("small",null,new Date(selectedReport.resolved_at).toLocaleString("ar-OM"))))
+      )
+    ),
     reportCaseMode==="admin"&&React.createElement("section",{className:"report-party-conversation-v4"},
       React.createElement("div",{className:"report-thread-title-v3"},
         React.createElement("div",null,React.createElement("span",{className:"section-eyebrow"},"سياق البلاغ"),React.createElement("h3",null,"المحادثة الأصلية بين الطرفين")),
