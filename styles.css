@@ -3385,3 +3385,16 @@ body{
     width:100%;
   }
 }
+
+.push-settings-actions-v9{display:flex;align-items:center;gap:7px}
+.push-test-btn-v9{
+  min-height:38px;padding:0 12px;border-radius:12px;
+  border:1px solid rgba(10,87,71,.12);
+  background:#EFF8F4;color:var(--forest);
+  font-family:'Noto Kufi Arabic',sans-serif;font-size:9px;font-weight:900;
+}
+.push-test-btn-v9:disabled{opacity:.55}
+@media(max-width:520px){
+  .push-settings-actions-v9{grid-column:1/-1;width:100%}
+  .push-settings-actions-v9>button{flex:1}
+}
