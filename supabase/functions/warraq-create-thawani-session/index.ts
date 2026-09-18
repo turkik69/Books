@@ -20,10 +20,10 @@ Deno.serve(async (req) => {
     const secret = Deno.env.get("THAWANI_SECRET_KEY");
     const publishable = Deno.env.get("THAWANI_PUBLISHABLE_KEY");
     const mode = Deno.env.get("THAWANI_MODE") === "live" ? "live" : "test";
-    const publicUrl = Deno.env.get("WARRAQ_PUBLIC_URL");
+    const publicUrl = Deno.env.get("WARRAQ_PUBLIC_URL") || "https://byyassmin.com/warraq";
 
     if (!supabaseUrl || !anonKey || !serviceKey) return json({ error: "supabase_config_missing" }, 500);
-    if (!secret || !publishable || !publicUrl) return json({ error: "payment_config_missing" }, 503);
+    if (!secret || !publishable) return json({ error: "payment_config_missing" }, 503);
 
     const userClient = createClient(supabaseUrl, anonKey, {
       global: { headers: { Authorization: authHeader } },
