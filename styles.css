@@ -2501,3 +2501,373 @@ html, body, #root, .warraq-app{
   .admin-user-profile-data-v6 strong{grid-column:auto}
   .admin-user-metrics-v6{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+/* ======================================================================
+   WARRAQ V7 — LIVING PAPER DESIGN SYSTEM
+   A brighter, faster, more dimensional visual language for the full app.
+   ====================================================================== */
+:root{
+  --forest:#0A5747;
+  --forest-deep:#06382F;
+  --forest-900:#042A24;
+  --mint:#DDF5EA;
+  --mint-strong:#84D3B4;
+  --brass:#F0A83A;
+  --brass-light:#FFD06A;
+  --coral:#E86954;
+  --sky:#67B8D7;
+  --violet:#8A78D2;
+  --paper:#FFF8EE;
+  --paper-deep:#F1E9DB;
+  --paper-warm:#FFF1D8;
+  --ink:#162D28;
+  --muted:#6C7772;
+  --ember:#E05A47;
+  --sage:#3A9B78;
+  --line:rgba(10,87,71,.10);
+  --line-strong:rgba(10,87,71,.17);
+  --card:rgba(255,255,255,.94);
+  --radius-xl:32px;
+  --radius-lg:26px;
+  --radius-md:18px;
+  --shadow-sm:0 8px 26px rgba(8,56,47,.07);
+  --shadow-md:0 18px 48px rgba(8,56,47,.11);
+  --shadow-lg:0 30px 86px rgba(6,56,47,.18);
+  --shadow-glow:0 16px 44px rgba(240,168,58,.20);
+  --ease-spring:cubic-bezier(.2,.9,.2,1);
+}
+
+html{background:var(--paper);scroll-behavior:auto}
+body{
+  font-family:'IBM Plex Sans Arabic',system-ui,-apple-system,sans-serif;
+  background:
+    radial-gradient(circle at 8% 2%,rgba(255,208,106,.20),transparent 25rem),
+    radial-gradient(circle at 92% 12%,rgba(103,184,215,.11),transparent 24rem),
+    radial-gradient(circle at 50% 96%,rgba(58,155,120,.08),transparent 30rem),
+    linear-gradient(180deg,#FFF9F0 0%,#FFF8EE 48%,#FAF2E7 100%);
+  color:var(--ink);
+}
+.disp{font-family:'Noto Kufi Arabic','IBM Plex Sans Arabic',sans-serif}
+.lit{font-family:'Amiri','Noto Naskh Arabic',serif}
+
+::selection{background:rgba(255,208,106,.55);color:var(--forest-deep)}
+:focus-visible{outline:3px solid rgba(240,168,58,.30);outline-offset:3px}
+
+@keyframes warraqPageIn{from{opacity:.35;transform:translateY(7px) scale(.997)}to{opacity:1;transform:none}}
+@keyframes warraqFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-7px) rotate(.7deg)}}
+@keyframes warraqGlow{0%,100%{box-shadow:0 16px 42px rgba(240,168,58,.16)}50%{box-shadow:0 18px 54px rgba(240,168,58,.30)}}
+@keyframes warraqPulseDot{0%,100%{transform:scale(.9);opacity:.55}50%{transform:scale(1.15);opacity:1}}
+@keyframes logoPaperFloat{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-2px) rotate(1deg)}}
+
+.rise{animation:warraqPageIn .26s var(--ease-spring) both}
+@supports (view-transition-name:root){
+  ::view-transition-old(root){animation:120ms ease both fade-out}
+  ::view-transition-new(root){animation:220ms var(--ease-spring) both fade-in}
+  @keyframes fade-out{to{opacity:0;transform:scale(.996)}}
+  @keyframes fade-in{from{opacity:.25;transform:translateY(5px)}}
+}
+
+/* --- Brand / paper mark ------------------------------------------------ */
+.brand-mark{
+  position:relative;
+  width:46px!important;height:46px!important;
+  border-radius:16px!important;
+  background:
+    radial-gradient(circle at 28% 20%,rgba(255,255,255,.34),transparent 34%),
+    linear-gradient(145deg,#FFCD64 0%,#F0A83A 58%,#D98728 100%)!important;
+  border:1px solid rgba(255,255,255,.23);
+  box-shadow:0 12px 30px rgba(240,168,58,.28),inset 0 1px 0 rgba(255,255,255,.30)!important;
+  transform:rotate(-2deg);
+  overflow:visible;
+}
+.brand-mark::after{
+  content:"";position:absolute;inset:5px -5px -5px 5px;border-radius:15px;
+  background:rgba(3,38,32,.16);filter:blur(4px);z-index:-1
+}
+.brand-mark .paper-logo-svg{animation:logoPaperFloat 3.8s ease-in-out infinite;filter:drop-shadow(0 4px 8px rgba(5,55,46,.14))}
+.warraq-header .lit{font-size:27px!important;text-shadow:0 3px 14px rgba(0,0,0,.16)}
+
+/* --- Header ------------------------------------------------------------- */
+.warraq-header{
+  background:rgba(5,57,47,.93)!important;
+  border-bottom:1px solid rgba(255,255,255,.10);
+  box-shadow:0 12px 34px rgba(5,48,41,.16);
+  -webkit-backdrop-filter:blur(18px) saturate(125%)!important;
+  backdrop-filter:blur(18px) saturate(125%)!important;
+}
+.warraq-header::after{
+  content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,208,106,.55),transparent)
+}
+.header-icon-btn{
+  width:42px!important;height:42px!important;border-radius:14px!important;
+  background:rgba(255,255,255,.10)!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 6px 18px rgba(0,0,0,.08)!important;
+}
+.header-icon-btn:active{transform:scale(.92)!important}
+.header-icon-btn svg{stroke-width:2.15;filter:drop-shadow(0 2px 5px rgba(0,0,0,.12))}
+
+/* --- Shared surfaces / controls ---------------------------------------- */
+.warraq-app input,.warraq-app textarea,.warraq-app select{
+  border-radius:17px!important;
+  min-height:48px;
+  border:1px solid var(--line)!important;
+  background:rgba(255,255,255,.96)!important;
+  box-shadow:0 5px 16px rgba(7,52,44,.035);
+  transition:border-color .16s ease,box-shadow .16s ease,transform .16s ease!important;
+}
+.warraq-app input:focus,.warraq-app textarea:focus,.warraq-app select:focus{
+  border-color:rgba(240,168,58,.68)!important;
+  box-shadow:0 0 0 4px rgba(240,168,58,.10),0 10px 26px rgba(7,52,44,.06)!important;
+}
+.warraq-app button{transition:transform .14s var(--ease-spring),box-shadow .18s ease,background-color .18s ease,border-color .18s ease,opacity .18s ease}
+.warraq-app button:active:not(:disabled){transform:scale(.975)}
+.shadow-paper{box-shadow:var(--shadow-sm)!important}
+.shadow-paper-lg{box-shadow:var(--shadow-md)!important}
+.section-eyebrow{
+  font-family:'Noto Kufi Arabic',sans-serif!important;
+  font-size:10px!important;letter-spacing:.025em!important;font-weight:800!important;
+  color:var(--brass)!important;
+}
+
+/* --- Home: richer hero -------------------------------------------------- */
+.home-v3{padding-top:18px!important}
+.home-hero-v3{
+  border-radius:32px!important;
+  background:
+    radial-gradient(circle at 84% 12%,rgba(255,208,106,.28),transparent 23%),
+    radial-gradient(circle at 8% 88%,rgba(103,184,215,.12),transparent 30%),
+    linear-gradient(138deg,#0A604E 0%,#07473C 52%,#052F28 100%)!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  box-shadow:0 30px 80px rgba(5,54,46,.24)!important;
+}
+.home-hero-v3::after{
+  content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  background:linear-gradient(115deg,rgba(255,255,255,.055),transparent 32%,transparent 70%,rgba(255,208,106,.035));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10)
+}
+.home-kicker{
+  padding:7px 11px;border-radius:999px;width:max-content;
+  background:rgba(255,208,106,.10);border:1px solid rgba(255,208,106,.18)
+}
+.home-hero-v3 h1{font-size:36px!important;text-wrap:balance;text-shadow:0 4px 22px rgba(0,0,0,.12)}
+.home-hero-v3 h1 span{color:#FFD66F!important}
+.home-hero-v3 p{color:rgba(255,255,255,.78)!important}
+.home-primary-cta{
+  background:linear-gradient(135deg,#FFD06A,#F0A83A)!important;color:#163C32!important;
+  box-shadow:0 13px 30px rgba(240,168,58,.24)!important;border:1px solid rgba(255,255,255,.18)!important
+}
+.home-secondary-cta{background:rgba(255,255,255,.085)!important;border:1px solid rgba(255,255,255,.14)!important;backdrop-filter:blur(8px)}
+.home-hero-art{animation:warraqFloat 5.2s ease-in-out infinite}
+.book-stack-one{background:linear-gradient(150deg,#F3BC55,#D67C2C)!important}
+.book-stack-two{background:linear-gradient(150deg,#72CBB0,#338F72)!important}
+.hero-roundel{border-color:rgba(255,208,106,.24)!important;box-shadow:0 0 0 18px rgba(255,208,106,.035),0 0 0 36px rgba(255,208,106,.018)!important}
+
+.home-stats-v3>div{
+  background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(255,252,247,.94))!important;
+  border:1px solid rgba(10,87,71,.08)!important;
+  box-shadow:0 10px 30px rgba(8,56,47,.055)!important;
+}
+.home-stats-v3>div:nth-child(1){border-top:3px solid var(--brass)!important}
+.home-stats-v3>div:nth-child(2){border-top:3px solid var(--sage)!important}
+.home-stats-v3>div:nth-child(3){border-top:3px solid var(--sky)!important}
+
+.home-search-v3{
+  background:#fff!important;border:1px solid rgba(10,87,71,.10)!important;
+  box-shadow:0 12px 34px rgba(8,56,47,.07)!important;
+}
+.home-search-v3:focus-within{border-color:rgba(240,168,58,.44)!important;box-shadow:0 0 0 4px rgba(240,168,58,.08),0 18px 42px rgba(8,56,47,.09)!important}
+.home-filter-btn{background:linear-gradient(135deg,#EEF9F5,#DFF3EB)!important;color:var(--forest)!important}
+
+.category-grid-v3{gap:10px!important}
+.category-card-v3{
+  background:linear-gradient(180deg,#FFFFFF,#FFFCF7)!important;
+  border:1px solid rgba(10,87,71,.075)!important;
+  box-shadow:0 8px 26px rgba(8,56,47,.055)!important;
+  position:relative;overflow:hidden;
+}
+.category-card-v3::before{content:"";position:absolute;width:56px;height:56px;border-radius:50%;right:-20px;top:-22px;background:rgba(240,168,58,.08)}
+.category-card-v3:nth-child(2n)::before{background:rgba(58,155,120,.09)}
+.category-card-v3:nth-child(3n)::before{background:rgba(103,184,215,.10)}
+.category-card-v3:hover{transform:translateY(-3px)!important;box-shadow:0 16px 34px rgba(8,56,47,.09)!important;border-color:rgba(240,168,58,.24)!important}
+.category-icon-v3{
+  width:43px!important;height:43px!important;border-radius:14px!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  background:linear-gradient(145deg,#FFF1CF,#FFE0A0)!important;color:#B86D18!important;
+  box-shadow:inset 0 0 0 1px rgba(240,168,58,.16),0 7px 18px rgba(240,168,58,.10)
+}
+.category-card-v3:nth-child(2n) .category-icon-v3{background:linear-gradient(145deg,#E7F8F1,#CBEEDD)!important;color:#23805F!important}
+.category-card-v3:nth-child(3n) .category-icon-v3{background:linear-gradient(145deg,#E8F6FB,#D1EDF7)!important;color:#2E82A3!important}
+.category-icon-v3 svg{stroke-width:2.05}
+
+/* --- Book cards / listings --------------------------------------------- */
+.book-card-v3{
+  border-radius:24px!important;background:rgba(255,255,255,.97)!important;
+  border:1px solid rgba(10,87,71,.075)!important;
+  box-shadow:0 10px 30px rgba(8,56,47,.065)!important;
+  overflow:hidden;position:relative;
+}
+.book-card-v3::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.72)}
+.book-card-v3:hover{transform:translateY(-4px)!important;box-shadow:0 20px 48px rgba(8,56,47,.12)!important;border-color:rgba(240,168,58,.22)!important}
+.book-cover-v3{background-position:center!important;background-size:cover!important}
+.book-info-v3 h3{color:var(--ink)!important}
+.book-category-v3{background:#EEF8F4!important;color:#207A60!important;border:1px solid rgba(58,155,120,.10)!important}
+.condition-pill-v3{backdrop-filter:blur(8px);box-shadow:0 5px 15px rgba(0,0,0,.08)}
+.book-card-footer-v3 strong{color:var(--forest)!important}
+.book-open-v3{color:var(--brass)!important}
+
+.listing-gallery-v6,.book-sheet-v3{
+  border:1px solid rgba(10,87,71,.08)!important;
+  box-shadow:0 18px 50px rgba(8,56,47,.075)!important;
+}
+.listing-main-image-v6{background:linear-gradient(145deg,#F8EFE0,#E9DDC9)!important}
+.listing-angle-card-v6{border:1px solid rgba(10,87,71,.08)!important;background:#fff!important}
+.favorite-action-v3{box-shadow:0 10px 28px rgba(224,90,71,.12)!important}
+
+/* --- Auth / onboarding -------------------------------------------------- */
+.auth-card-v3{
+  border-radius:30px!important;overflow:hidden;
+  border:1px solid rgba(10,87,71,.08)!important;
+  box-shadow:0 28px 80px rgba(8,56,47,.14)!important;
+  background:#fff!important;
+}
+.auth-visual-v3{
+  background:
+    radial-gradient(circle at 85% 12%,rgba(255,208,106,.24),transparent 25%),
+    linear-gradient(145deg,#0B5C4A,#073C33)!important;
+}
+.auth-brand-chip{background:rgba(255,255,255,.10)!important;border:1px solid rgba(255,255,255,.14)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.auth-brand-chip .paper-logo-svg{filter:drop-shadow(0 4px 8px rgba(0,0,0,.12))}
+.auth-book-a{background:linear-gradient(145deg,#FFD06A,#F0A83A)!important}
+.auth-book-b{background:linear-gradient(145deg,#6CC7AB,#2A896A)!important}
+.auth-paper-note{box-shadow:0 14px 34px rgba(4,42,35,.17)!important}
+.field-shell-v3{border:1px solid rgba(10,87,71,.10)!important;background:#FFFEFC!important;transition:.16s ease}
+.field-shell-v3:focus-within{border-color:rgba(240,168,58,.48)!important;box-shadow:0 0 0 4px rgba(240,168,58,.08)!important;transform:translateY(-1px)}
+.auth-submit-v3{background:linear-gradient(135deg,#0B6652,#07463B)!important;box-shadow:0 14px 32px rgba(10,87,71,.20)!important}
+.signup-trust-v3 span{background:#ECF8F3!important;color:#287C62!important;border-color:rgba(58,155,120,.12)!important}
+
+/* --- Content pages: unified interactive shell -------------------------- */
+.content-view,.seller-v3,.orders-v3,.cart-v3,.listings-v3,.favorites-v3,.academic-v3,.messages-v3,.notifications-v3{
+  animation:warraqPageIn .25s var(--ease-spring) both;
+}
+.content-view>.bg-white,.seller-v3>.bg-white,.orders-v3>.bg-white,.cart-v3>.bg-white,.listings-v3>.bg-white,
+.messages-v3>.bg-white,.notifications-v3>.bg-white{
+  border:1px solid rgba(10,87,71,.075)!important;
+  box-shadow:0 12px 36px rgba(8,56,47,.06)!important;
+}
+.favorites-hero-v3,.academic-hero-v3{
+  border-radius:28px!important;
+  background:
+    radial-gradient(circle at 85% 10%,rgba(255,208,106,.22),transparent 26%),
+    linear-gradient(140deg,#0A604E,#073B32)!important;
+  box-shadow:0 24px 66px rgba(7,55,47,.18)!important;
+}
+.favorites-count-v3{background:rgba(255,255,255,.11)!important;border-color:rgba(255,255,255,.13)!important}
+.favorite-remove-v3{background:#FFF0ED!important;color:#C44D3B!important}
+
+.academic-benefits-v3 span{background:rgba(255,255,255,.09)!important;border:1px solid rgba(255,255,255,.10)!important}
+.academic-stamp-v3{background:linear-gradient(145deg,#FFD06A,#F0A83A)!important;color:#0B4A3D!important;box-shadow:0 14px 34px rgba(240,168,58,.22)!important}
+.academic-filter-card-v3,.academic-step-v3,.academic-book-card-v3{
+  border:1px solid rgba(10,87,71,.08)!important;box-shadow:0 10px 30px rgba(8,56,47,.055)!important;background:#fff!important
+}
+.step-num-v3{background:linear-gradient(135deg,#0A604E,#0A8A6A)!important;color:#fff!important;box-shadow:0 7px 18px rgba(10,87,71,.15)}
+.academic-search-btn-v3{background:linear-gradient(135deg,#F0A83A,#E28D26)!important;color:#143D33!important;box-shadow:0 12px 26px rgba(240,168,58,.20)!important}
+.course-tag-v3{background:#EEF8F4!important;color:#22775E!important}
+
+/* --- Messages / notification presence ---------------------------------- */
+.messages-v3 button,.notifications-v3 button{border-color:rgba(10,87,71,.075)!important}
+.messages-v3 button:hover,.notifications-v3 button:hover{background:#FFFCF7!important;border-color:rgba(240,168,58,.19)!important}
+.chat-scroll{scroll-behavior:smooth}
+.chat-scroll::-webkit-scrollbar-thumb{background:linear-gradient(var(--brass),#D58A26)!important}
+
+/* --- Admin surfaces ----------------------------------------------------- */
+.admin-view>div:first-child{
+  background:
+    radial-gradient(circle at 88% 4%,rgba(255,208,106,.18),transparent 28%),
+    linear-gradient(145deg,#063D34,#042B25)!important;
+}
+.admin-user-card-v6,.admin-report-card-v3,.admin-user-section-v6,.admin-user-profile-card-v6{
+  border-color:rgba(10,87,71,.075)!important;
+  box-shadow:0 9px 26px rgba(8,56,47,.055)!important;
+}
+.admin-user-card-v6:hover,.admin-report-card-v3:hover{transform:translateY(-2px)!important;box-shadow:0 16px 36px rgba(8,56,47,.09)!important}
+.report-metric-v5{box-shadow:0 8px 24px rgba(8,56,47,.055)!important}
+.report-metric-v5.active{border-top:3px solid var(--brass)!important}
+.report-metric-v5.reviewing{border-top:3px solid var(--sky)!important}
+.report-metric-v5.critical{border-top:3px solid var(--coral)!important}
+.report-metric-v5.closed{border-top:3px solid var(--sage)!important}
+.admin-user-modal-v6,.report-case-modal-v3{background:#FFF9F0!important;box-shadow:0 34px 90px rgba(4,38,32,.28)!important}
+.admin-user-header-v6,.report-case-header-v3{background:linear-gradient(145deg,#0A5D4C,#06382F)!important}
+.reactivate-user-btn-v6{background:linear-gradient(135deg,#3DA47F,#20765C)!important}
+.restrict-user-btn-v5{background:linear-gradient(135deg,#E86954,#C84735)!important}
+
+/* --- Bottom navigation: app-like and tactile --------------------------- */
+.warraq-bottomnav-shell{padding-inline:8px}
+.warraq-bottomnav{
+  position:relative;
+  min-height:74px!important;
+  border-radius:25px!important;
+  background:rgba(5,55,46,.94)!important;
+  border:1px solid rgba(255,255,255,.11)!important;
+  box-shadow:0 20px 58px rgba(4,41,35,.28)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(120%);
+  backdrop-filter:blur(18px) saturate(120%);
+}
+.nav-item{position:relative;min-width:92px!important;border-radius:18px!important}
+.nav-item svg{stroke-width:2.05;transition:transform .16s var(--ease-spring),filter .16s ease}
+.nav-item[style*="background"]{background:linear-gradient(180deg,rgba(255,208,106,.16),rgba(240,168,58,.09))!important;border:1px solid rgba(255,208,106,.13)!important}
+.nav-item[style*="background"] svg{transform:translateY(-2px) scale(1.08);filter:drop-shadow(0 4px 10px rgba(240,168,58,.22))}
+.nav-item[style*="background"]::after{content:"";position:absolute;width:20px;height:3px;border-radius:99px;bottom:4px;background:var(--brass-light);box-shadow:0 0 12px rgba(255,208,106,.38)}
+
+/* --- Boot screen -------------------------------------------------------- */
+#boot{
+  background:
+    radial-gradient(circle at 50% 40%,rgba(255,208,106,.18),transparent 18rem),
+    linear-gradient(180deg,#FFF9F0,#F9F0E4)!important;
+}
+#boot .logo{font-size:38px!important;color:var(--forest)!important;text-shadow:0 4px 18px rgba(10,87,71,.08)}
+#boot .ring{width:42px!important;height:42px!important;border-width:4px!important;border-color:rgba(10,87,71,.10)!important;border-top-color:var(--brass)!important}
+
+/* --- Desktop enhancements ---------------------------------------------- */
+@media(min-width:768px){
+  .warraq-header .warraq-container{padding-block:12px!important}
+  .home-hero-v3{padding:38px 38px!important;min-height:300px}
+  .home-hero-v3 h1{font-size:46px!important}
+  .category-grid-v3{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+  .category-card-v3{min-height:118px!important}
+  .book-card-v3{min-height:340px!important}
+  .warraq-bottomnav-shell>div{max-width:640px!important}
+}
+@media(min-width:1100px){
+  .home-hero-v3{padding:46px 48px!important;min-height:330px}
+  .home-hero-v3 h1{font-size:52px!important}
+  .books-grid-v3{gap:22px!important}
+  .book-card-v3:hover .book-cover-v3{transform:scale(1.018)}
+  .book-cover-v3{transition:transform .28s var(--ease-spring)}
+}
+
+/* --- Mobile: tighter, clearer and touch-first -------------------------- */
+@media(max-width:767px){
+  body{background:linear-gradient(180deg,#FFF9F0 0%,#FAF1E6 100%)}
+  .warraq-header .warraq-container{padding-inline:14px!important;padding-top:9px!important;padding-bottom:9px!important}
+  .brand-mark{width:42px!important;height:42px!important;border-radius:14px!important}
+  .warraq-header .lit{font-size:24px!important}
+  .home-v3{padding-top:14px!important}
+  .home-hero-v3{border-radius:25px!important;padding:24px 20px!important}
+  .home-hero-v3 h1{font-size:31px!important}
+  .home-hero-v3 p{font-size:13px!important;line-height:1.8!important}
+  .home-hero-actions{gap:8px!important}
+  .category-grid-v3{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:9px!important}
+  .category-card-v3{min-height:102px!important;padding:13px 8px!important}
+  .category-icon-v3{width:40px!important;height:40px!important}
+  .book-card-v3{border-radius:20px!important}
+  .nav-item{min-width:78px!important;padding-inline:11px!important}
+  .warraq-bottomnav{min-height:70px!important;border-radius:23px!important;padding-block:7px!important}
+  .warraq-bottomnav-shell>div{padding-inline:10px!important}
+  .admin-user-modal-v6,.report-case-modal-v3{border-radius:26px 26px 0 0!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .paper-logo-svg,.home-hero-art{animation:none!important}
+}
