@@ -87,8 +87,12 @@ Deno.serve(async (req) => {
       return json({ error: "payment_session_failed", detail: paymentJson?.description }, 502);
     }
 
+    const providerExpiresAt = paymentJson?.data?.expire_at || null;
     const { error: saveError } = await admin.from("orders")
-      .update({ payment_session_id: sessionId })
+      .update({
+        payment_session_id: sessionId,
+        payment_expires_at: providerExpiresAt || order.payment_expires_at,
+      })
       .eq("id", order.id);
 
     if (saveError) {
