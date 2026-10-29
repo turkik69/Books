@@ -7,6 +7,12 @@ const w = window as any;
 const isNative = Capacitor.isNativePlatform();
 const platform = Capacitor.getPlatform();
 
+async function pushStatus() {
+  if (!isNative) return { status: 'unsupported' };
+  const perms = await PushNotifications.checkPermissions();
+  return { status: perms.receive };
+}
+
 async function requestPush() {
   if (!isNative) return { status: 'unsupported' };
   let perms = await PushNotifications.checkPermissions();
@@ -14,6 +20,12 @@ async function requestPush() {
   if (perms.receive !== 'granted') return { status: perms.receive };
   await PushNotifications.register();
   return { status: 'registering' };
+}
+
+async function unregisterPush() {
+  if (!isNative) return { status: 'unsupported' };
+  await PushNotifications.unregister();
+  return { status: 'unregistered' };
 }
 
 async function chooseBookImage() {
@@ -33,7 +45,9 @@ async function chooseBookImage() {
 w.WarraqNative = {
   isNative,
   platform,
+  pushStatus,
   requestPush,
+  unregisterPush,
   chooseBookImage
 };
 
