@@ -52,6 +52,17 @@ w.WarraqNative = {
 };
 
 if (isNative) {
+  if (platform === 'android') {
+    PushNotifications.createChannel({
+      id: 'warraq_general',
+      name: 'إشعارات ورّاق',
+      description: 'الرسائل والطلبات والبلاغات وتحديثات الحساب',
+      importance: 5,
+      visibility: 1,
+      sound: 'default'
+    }).catch(() => {});
+  }
+
   PushNotifications.addListener('registration', token => {
     window.dispatchEvent(new CustomEvent('warraq:native-push-token', {
       detail: { token: token.value, platform }
