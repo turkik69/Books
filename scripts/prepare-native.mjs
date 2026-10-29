@@ -9,7 +9,7 @@ await mkdir(www, { recursive: true });
 
 const files = [
   'index.html','app.js','styles.css','privacy.html','terms.html',
-  'support.html','delete-account.html','service-worker.js'
+  'support.html','delete-account.html','service-worker.js','manifest.webmanifest'
 ];
 
 for (const file of files) {
@@ -34,6 +34,6 @@ let html = await readFile(indexPath, 'utf8');
 if (!html.includes('native-bridge.js')) {
   html = html.replace('</head>', '<script defer src="./native-bridge.js"></script></head>');
 }
-html = html.replace(/<script>if\("serviceWorker" in navigator\)[\s\S]*?<\/script>/, '');
+html = html.replace(/<script>\s*if\s*\("serviceWorker" in navigator\)[\s\S]*?<\/script>/, '');
 await writeFile(indexPath, html);
 console.log('Prepared local native web bundle in www/');
