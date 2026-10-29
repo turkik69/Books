@@ -1,0 +1,16 @@
+{
+  "appId": "om.warraq.app",
+  "appName": "ورّاق",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  },
+  "ios": {
+    "contentInset": "automatic",
+    "scheme": "Warraq"
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}

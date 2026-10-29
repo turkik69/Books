@@ -1,0 +1,25 @@
+{
+  "name": "warraq-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "native:prepare": "node scripts/prepare-native.mjs",
+    "native:configure": "node scripts/configure-native.mjs",
+    "native:sync": "npm run native:prepare && npx cap sync && npm run native:configure",
+    "native:add:ios": "npm run native:prepare && npx cap add ios && npm run native:configure",
+    "native:add:android": "npm run native:prepare && npx cap add android && npm run native:configure"
+  },
+  "dependencies": {
+    "@capacitor/app": "8.1.2",
+    "@capacitor/camera": "8.2.6",
+    "@capacitor/core": "8.5.3",
+    "@capacitor/device": "8.0.3",
+    "@capacitor/push-notifications": "8.1.3"
+  },
+  "devDependencies": {
+    "@capacitor/android": "8.5.3",
+    "@capacitor/cli": "8.5.3",
+    "@capacitor/ios": "8.5.3",
+    "esbuild": "0.28.2"
+  }
+}
