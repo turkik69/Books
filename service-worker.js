@@ -1,13 +1,19 @@
-const CACHE_NAME = "warraq-shell-v23";
+const CACHE_NAME = "warraq-shell-v24";
 const RUNTIME_CACHE = "warraq-runtime-v1";
 
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./app.js?v=20261029-20",
+  "./app.js?v=20261029-22",
   "./styles.css?v=20260918-19",
   "./privacy.html",
-  "./terms.html"
+  "./terms.html",
+  "./support.html",
+  "./delete-account.html",
+  "./manifest.webmanifest",
+  "./assets/warraq-icon-192.png",
+  "./assets/warraq-icon-512.png",
+  "./assets/apple-touch-icon.png"
 ];
 
 const RUNTIME_ASSETS = [
