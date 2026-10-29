@@ -1,7 +1,10 @@
-const CACHE_NAME = "warraq-shell-v24";
+const CACHE_NAME = "warraq-shell-v23";
 const RUNTIME_CACHE = "warraq-runtime-v1";
 
 const APP_SHELL = [
+  "./offline.html",
+  "./manifest.webmanifest",
+  "./warraq-icon.svg",
   "./",
   "./index.html",
   "./app.js?v=20261029-22",
