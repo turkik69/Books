@@ -14,6 +14,21 @@ if (existsSync(plist)) {
       text = text.replace('</dict>', '  <key>'+key+'</key>\n  <string>'+value+'</string>\n</dict>');
     }
   }
+  if (!text.includes('<key>CFBundleURLTypes</key>')) {
+    const urlScheme = `  <key>CFBundleURLTypes</key>
+  <array>
+    <dict>
+      <key>CFBundleURLName</key>
+      <string>om.warraq.app</string>
+      <key>CFBundleURLSchemes</key>
+      <array>
+        <string>warraq</string>
+      </array>
+    </dict>
+  </array>
+`;
+    text = text.replace('</dict>', urlScheme + '</dict>');
+  }
   await writeFile(plist, text);
 }
 
@@ -35,3 +50,20 @@ if (existsSync(appDelegate)) {
   }
 }
 console.log('Native platform privacy descriptions and push hooks configured.');
+
+
+const androidManifest = new URL('../android/app/src/main/AndroidManifest.xml', import.meta.url);
+if (existsSync(androidManifest)) {
+  let text = await readFile(androidManifest, 'utf8');
+  if (!text.includes('android:scheme="warraq"')) {
+    const intent = `
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data android:scheme="warraq" android:host="auth" />
+      </intent-filter>`;
+    text = text.replace('</activity>', intent + '\n    </activity>');
+    await writeFile(androidManifest, text);
+  }
+}
